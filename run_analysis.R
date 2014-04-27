@@ -60,3 +60,20 @@ tidyData<-cbind(subjects,activities_pretty,tidyAllData)
 # label the columns:
 colnames(tidyData)<-c("Subject","Activity",as.character(vars))
 
+# now split the data by subject:
+spl_sub<-split(tidyData,tidyData$Subject)
+
+# and use sapply to get the means for all variables
+# grouped by subject
+subject_means<-sapply(spl_sub,function(x) colMeans(x[,as.character(vars)]))
+
+# Do the same but split the data on Actvity:
+spl_act<-split(tidyData,tidyData$Activity)
+activity_means<-sapply(spl_act,function(x) colMeans(x[,as.character(vars)]))
+
+# concatenate:
+tidyMeans<-cbind(activity_means,subject_means)
+
+#write it out to disk
+write.table(tidyData, file="./tidydata.txt", sep="\t")
+write.table(tidyMeans, file="./tidymeans.txt", sep="\t")
