@@ -84,4 +84,28 @@ tidyData<-cbind(subjects,activities_pretty,tidyAllData)
 Now I just need the column names:
 colnames(tidyData)<-c("Subject","Activity",as.character(vars))
 
-Done!
+Done! -- nope - now I need a second tidy data set with the average
+of each variable for each activity and each subject. Holy cow. seems like
+split and lappy or sapply will come in handy here
+
+I played with split to split the dataset according to factors and it worked
+great.
+I split on each subject with:
+spl_sub<-split(tidyData,tidyData$Subject)
+I used sapply to get the means for the variables as follows:
+subject_means<-sapply(spl_sub,function(x) colMeans(x[,as.character(vars)]))
+
+Now I need to do the same but split the data on Actvity:
+spl_act<-split(tidyData,tidyData$Activity)
+activity_means<-sapply(spl_act,function(x) colMeans(x[,as.character(vars)]))
+
+Finally, concatenate these two, but just append the new cols
+tidyMeans<-cbind(activity_means,subject_means)
+
+This gives me a matrix, not sure that is what I want, but it seems ok
+got to get this into a txt file now...
+
+
+#write it out to disk
+write.table(tidyData, file="./tidydata.txt", sep="\t")
+write.table(tidyMeans, file="./tidymeans.txt", sep="\t")
